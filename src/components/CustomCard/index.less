@@ -1,0 +1,113 @@
+.cardBox {
+  width: 400px;
+  height: 182px;
+  margin-top: 24px;
+  padding: 20px;
+  color: #fff;
+  z-index: 1;
+
+  &.chatCard {
+    position: relative;
+    // height: 224px;
+    // background-image: url('@/assets/home/chatBgAll.svg');
+    width: 100%;
+  }
+
+  &.agentCard {
+    background-image: url('@/assets/home/agentCard.png');
+    background-size: cover;
+  }
+
+  &.embedCard {
+    background-image: url('@/assets/home/embedCard.png');
+    background-size: cover;
+
+  }
+
+  &.fineTuningCard {
+    background-image: url('@/assets/home/fineTuningCard.png');
+    background-size: cover;
+    margin-bottom: 20px;
+
+  }
+
+  &.visionCard {
+    background-image: url('@/assets/home/visionCard.png');
+    background-size: cover;
+    margin-bottom: 20px;
+  }
+
+  &.voiceCard {
+    height: 150px;
+    background-image: url('@/assets/home/voiceCard.svg');
+    margin: 0 0 20px 0;
+  }
+
+  &.textCard {
+    height: 150px;
+    background-image: url('@/assets/home/textCard.svg');
+    margin: 0 0 20px 0;
+  }
+
+  &.watchCard {
+    height: 100px;
+    width: 100%;
+    background-image: url('@/assets/home/watchCard.svg');
+    margin: 0 0 16px 0;
+  }
+
+  // &.customApp {
+  //   height: 150px;
+  //   background-image: url('@/assets/home/customApp.svg');
+  //   margin-top: 10px !important;
+  // }
+
+  // &.systemApp {
+  //   height: 150px;
+  //   background-image: url('@/assets/home/systemApp.svg');
+  //   margin-top: 10px !important;
+  // }
+
+  h2 {
+    margin: 4px 0 8px;
+    font-weight: 400;
+    font-size: 20px;
+  }
+
+  ul {
+    font-size: 12px;
+    margin-top: 24px;
+    display: flex;
+    padding: 0;
+
+    a {
+      color: #fff;
+    }
+
+    li {
+      margin-right: 1em;
+      cursor: pointer;
+    }
+  }
+}
+
+.chat-cardBg {
+  position: absolute;
+  width: 100%;
+  height: 224px;
+  right: 0;
+  bottom: 0;
+  z-index: 0;
+  background-image: url('@/assets/home/chatBg.png');
+  background-size: cover;
+}
+
+.tagBox {
+  background-color: #fff;
+  color: #1677FF;
+  line-height: 1.5;
+  height: 22px;
+  padding: 0 10px;
+  border-radius: 4px;
+  margin: 8px 0;
+}

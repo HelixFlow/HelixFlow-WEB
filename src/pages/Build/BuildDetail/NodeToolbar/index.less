@@ -1,0 +1,19 @@
+.build_custom_node_toolbar{
+  position: absolute;
+  top: -52px;
+  left: calc(50% - 34px);
+  display: flex;
+  justify-content: space-between;
+  background-color:  var(--baseCardColor);
+  border-radius: 8px;
+  padding: 8px;
+  gap: 16px;
+  svg path{
+    fill-opacity: 1;
+    fill:  var(--baseDescFont);
+    transition: .3s;
+  }
+  svg:hover path{
+    fill:  var(--primaryColor);
+  }
+}

@@ -1,0 +1,42 @@
+{
+  "private": true,
+  "author": "lsw",
+  "scripts": {
+    "dev": "cross-env UMI_ENV=dev umi dev",
+    "build": "cross-env UMI_ENV=prod umi build",
+    "build:dev": "cross-env UMI_ENV=dev umi build",
+    "postinstall": "umi setup",
+    "setup": "umi setup",
+    "start": "npm run dev"
+  },
+  "dependencies": {
+    "@ant-design/charts": "2.0.3",
+    "@ant-design/pro-components": "^2.6.49",
+    "@antv/g2plot": "^2.4.31",
+    "antd": "^5.14.1",
+    "casdoor-js-sdk": "^0.14.0",
+    "classnames": "^2.5.1",
+    "dayjs": "^1.11.10",
+    "github-markdown-css": "^5.5.1",
+    "html-loader": "^5.0.0",
+    "mammoth": "^1.6.0",
+    "markdown-loader": "^8.0.0",
+    "pdfjs-dist": "3.11.174",
+    "react-ace": "^10.1.0",
+    "react-json-view": "^1.21.3",
+    "react-markdown": "^9.0.1",
+    "reactflow": "^11.5.5",
+    "rehype-raw": "^7.0.0",
+    "remark-gfm": "^4.0.0",
+    "short-unique-id": "^5.0.3",
+    "sse.js": "^0.6.1",
+    "umi": "^4.1.1"
+  },
+  "devDependencies": {
+    "@types/react": "^18.0.33",
+    "@types/react-dom": "^18.0.11",
+    "@umijs/plugins": "^4.1.1",
+    "cross-env": "^7.0.0",
+    "typescript": "^5.0.3"
+  }
+}

@@ -1,0 +1,54 @@
+.body-wrap-light,
+body {
+  overflow: hidden;
+  --primaryColor: #1677FF;
+  --primarySecondColor: #1668DC;
+  // theme1下的全局变量在此定义
+
+  --containerHeight: calc(100vh - 92px);
+  --fullScreenHeight: calc(100vh - 68px);
+  --chatBgImage: linear-gradient(180deg, #E3EBF8 0%, #F6FAFF 100%);
+  --exampleBgImage: linear-gradient(180deg, var(--baseCardDeepBorder) 0%, var(--baseContentColor) 100%);
+  --baseBgColor: #F5F5F5;
+  --baseBgSecondColor: rgba(255, 255, 255, 0.60);
+  --activeMenuColor: #ffffff;
+  --baseContentColor: #FFFFFF;
+  --baseContentSecondColor: rgba(255, 255, 255, 0.80);
+  --baseCardColor: #FFFFFF;
+  --baseCardDeepColor: rgba(0, 0, 0, 0.02);
+  --baseCardDeeperColor: rgba(0, 0, 0, 0.06);
+  --baseCardBorder: rgba(0, 0, 0, 0.06);
+  --baseCardDeepBorder: var(--primaryColor);
+  --radioTypeBorder: rgba(0, 0, 0, 0.15);
+  --baseTitleFont: rgba(0, 0, 0, 0.88);
+  --baseDescFont: rgba(0, 0, 0, 0.45);
+  --baseContentFont: rgba(0, 0, 0, 0.65);
+  --renderingButtonBg: #E6F4FF;
+  --iconHoverBg: rgba(0, 0, 0, 0.06); //模型管理
+  --inputBoxBg: #ffffff66;
+  --promptBoxBg: linear-gradient(180deg, #F3F8FF 0%, #FFFFFF 80%);
+}
+
+.body-wrap-dark {
+  // theme2下的全局变量在此定义
+
+  --baseBgColor: #000000;
+  --baseBgSecondColor: rgba(20, 20, 20, 0.60);
+  --activeMenuColor: #ffffff;
+  --chatBgImage: linear-gradient(180deg, #232426 0%, #222222 100%);
+  --baseContentColor: #141414;
+  --baseContentSecondColor: rgba(20, 20, 20, 0.80);
+  --baseCardColor: #141414;
+  --baseCardDeepColor: rgba(255, 255, 255, 0.04);
+  --baseCardDeeperColor: rgba(255, 255, 255, 0.12);
+  --baseCardBorder: #303030;
+  --baseCardDeepBorder: var(--primarySecondColor);
+  --radioTypeBorder: #424242;
+  --baseTitleFont: rgba(255, 255, 255, 0.85);
+  --baseDescFont: rgba(255, 255, 255, 0.45);
+  --baseContentFont: rgba(255, 255, 255, 0.65);
+  --renderingButtonBg: #111A2C;
+  --iconHoverBg: rgba(229, 214, 214, 0.1); //模型管理
+  --inputBoxBg: #3a393966;
+  --promptBoxBg: linear-gradient(180deg, #232426 0%, #222222 100%);
+}

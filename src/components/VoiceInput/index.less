@@ -1,0 +1,24 @@
+.voice_input{
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  .start_icon{
+    &:hover path{
+      fill: var(--primaryColor);
+      fill-opacity: 1;
+    }
+  }
+  .stop_icon,.start_icon{
+    width: 20px;
+    cursor: pointer;
+  }
+  .recoding_icon{
+    width: 64px;
+    height: 20px;
+    g{
+      transform: scale(0.25);
+      transform-origin: 0 0;
+    }
+  }
+}
+

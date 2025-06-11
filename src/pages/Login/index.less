@@ -1,0 +1,118 @@
+.loginPage {
+  height: calc(100vh - 48px);
+  position: relative;
+  padding: 24px;
+  display: flex;
+  flex-direction: row;
+
+
+  .leftTip {
+    width: 674px;
+    height: 100%;
+    // background-color: rgba(28, 53, 241, 0.909);
+    background: url(@/assets/login/loginBg.svg);
+    background-size: cover;
+    border-radius: 16px;
+    position: relative;
+    color: #fff;
+
+    .leftDec {
+      max-width: 440px;
+      position: absolute;
+      top: 186px;
+      left: 24px;
+
+      .sub-dec {
+        font-size: 14px;
+
+        .directoryCard {
+          padding: 48px 12px 0 12px;
+          display: flex;
+          flex-direction: row;
+          // gap: 4;
+        }
+
+        .directoryContent {
+          margin-left: 12px;
+
+          .directoryTitle {
+            font-weight: 600;
+          }
+
+          .directoryDec {
+            margin: 6px 0 10px 0;
+            opacity: 0.8;
+          }
+        }
+      }
+    }
+  }
+
+  @media screen and (max-width: 1010px) {
+    .leftTip {
+      display: none !important;
+    }
+  }
+
+  .rightCard {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: 1;
+
+    .title {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+
+      h1 {
+        font-weight: 500;
+        font-size: 2.5em;
+        margin-right: 16px;
+      }
+
+      img {
+        width: 72px;
+        height: 72px;
+      }
+
+      .dec {
+        color: #999;
+        font-size: 1.5em;
+      }
+
+    }
+
+
+
+    .desc {
+      color: rgba(0, 0, 0, 0.65);
+      line-height: 28px;
+      font-size: 20px;
+      margin-top: 12px;
+    }
+
+    .login-form {
+      // margin-top: 20px;
+      width: 480px;
+
+      .label {
+        color: rgba(0, 0, 0, 0.88);
+        margin-bottom: 8px;
+        line-height: 22px;
+        font-size: 14px;
+      }
+
+      .ant-input-affix-wrapper {
+        height: 48px;
+      }
+
+      .login-form-button {
+        width: 100%;
+        margin-top: 16px;
+        height: 48px;
+      }
+    }
+  }
+
+}

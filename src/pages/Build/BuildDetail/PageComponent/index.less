@@ -1,0 +1,97 @@
+.buildDetailPage {
+  height: 100vh;
+
+  .flowPage {
+    height: 100%;
+    position: relative;
+    background-color: var(--baseBgColor);
+
+    .flowPage_header {
+      display: flex;
+      align-items: center;
+      height: 68px;
+      background-color: var(--baseContentColor);
+      padding: 24px;
+      box-sizing: border-box;
+      gap: 8px;
+
+      .app_name {
+        flex: 1;
+        font-size: 14px;
+        color: var(--baseTitleFont);
+        font-weight: 600;
+        line-height: 20px;
+      }
+    }
+
+    .mainContent {
+      display: flex;
+      height: calc(100% - 68px);
+
+      .sider {
+        margin-top: 24px;
+        margin-bottom: 24px;
+      }
+
+      .react-flow {
+        .flow-bg {
+          // background-color:  rgba(245, 245, 245, 1);
+        }
+      }
+    }
+  }
+}
+
+.workflowTestResult {
+  .title {
+    font-size: 16px;
+    color: var(--baseTitleFont);
+    font-weight: 600;
+    line-height: 22px;
+    margin-top: 12px;
+
+  }
+
+  .text {
+    font-size: 14px;
+    color: var(--baseTitleFont);
+    font-weight: 400;
+    line-height: 20px;
+    margin-top: 16px;
+  }
+
+  .content {
+    // font-size: 14px;
+    // color: var(--baseTitleFont);
+    // font-weight: 400;
+    // line-height: 24px;
+    margin-top: 16px;
+    // white-space: pre-line;
+    // background-color: var(--baseCardDeeperColor);
+    padding: 36px 0px 12px 0px;
+    box-sizing: border-box;
+    border-radius: 8px;
+    position: relative;
+    background-color: black;
+
+    .btn {
+      position: absolute;
+      right: 8px;
+      color: white;
+      top: 8px;
+    }
+
+    .line {
+      border-top: 1px solid #303030;
+      padding-bottom: 12px;
+    }
+
+    &.content2 {
+      background-color: white;
+
+      .btn {
+        color: black;
+      }
+    }
+  }
+}

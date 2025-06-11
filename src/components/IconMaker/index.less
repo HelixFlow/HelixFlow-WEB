@@ -1,0 +1,83 @@
+.iconMaker{
+  display: flex;
+  gap: 16px;
+  &>.customIcon{
+    width: 80px;
+    height: 80px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    img{
+      width: 48px;
+      height: 48px;
+    }
+  }
+  .options{
+    flex: 1;
+    background-color:  var(--baseCardDeepColor);
+    padding: 20px;
+    .name{
+      font-size: 14px;
+      line-height: 22px;
+      font-weight: 600;
+      color:  var(--baseTitleFont);
+      // margin-top: 16px;
+    }
+    .list{
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+      margin-top: 8px;
+      margin-bottom: 8px;
+      &>div{
+        width: 40px;
+        height: 40px;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color:  var(--baseCardDeeperColor);
+        &.colorBox{
+          background-color: none;
+        }
+        img{
+          width: 24px;
+          height: 24px;
+        }
+      }
+    }
+  }
+}
+.customIcon{
+  width: 40px;
+  height: 40px;
+  background-color:  var(--baseCardDeeperColor);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  flex-shrink: 0;
+  img{
+    width: 60%;
+    height: 60%;
+  }
+  // path{
+  //   fill-opacity: 1;
+  // }
+  // &.blueIcon path{
+  //   fill: linear-gradient(180deg, #4A96FF 0%, #1677FF 100%);
+  // }
+  // &.redIcon path{
+  //   fill: linear-gradient(180deg, rgba(255,78,152,0.6) 0%, #FF4E98 100%, #FF227F 100%);
+  // }
+  // &.yellowIcon path{
+  //   fill: linear-gradient(180deg, rgba(255,191,53,0.6) 0%, #FFA900 100%);
+  // }
+  // &.greenIcon path{
+  //   fill: linear-gradient(180deg, rgba(0,188,229,0.6) 0%, #02AACF 100%);
+  // }
+  // &.purpleIcon path{
+  //   fill: linear-gradient(180deg, rgba(70,111,255,0.6) 0%, #3462FF 100%);
+  // }
+}
