@@ -83,7 +83,7 @@ export const nodeColors2: { [char: string]: string } = {
   variable: "rgba(245, 34, 45,opacity)",
   database: "rgba(77, 84, 148,opacity)",
 
-  unknown: "rgba(167, 167, 167,opacity)",
+  unknown: "rgba(250, 219, 20,opacity)",
 };
 
 export const nodeNames: { [char: string]: string } = {

@@ -50,7 +50,7 @@ export default ({ data, selected }) => {
         ...prev,
       };
     });
-    
+
   }
 
   const handleAddField = (type) => {
@@ -113,10 +113,10 @@ export default ({ data, selected }) => {
   }
 
   return (
-    <div className={`flow_custom_node ${selected ? 'flow_custom_node_selected' : ''}`} style={{ borderColor: nodeColors2[name]?.replace('opacity', '0.35') }}>
-      <div className="flow_custom_node_content" style={{ backgroundColor: nodeColors2[name]?.replace('opacity', '0.1') }}>
-        <div className="custom_node_title" style={{ color: nodeColors2[name]?.replace('opacity', '1') }}>
-          <Icon type={name} fill={nodeColors2[name]?.replace('opacity', '1')} />
+    <div className={`flow_custom_node ${selected ? 'flow_custom_node_selected' : ''}`} style={{ borderColor: (nodeColors2[name] || nodeColors2['unknown'])?.replace('opacity', '0.35') }}>
+      <div className="flow_custom_node_content" style={{ backgroundColor: (nodeColors2[name] || nodeColors2['unknown'])?.replace('opacity', '0.1') }}>
+        <div className="custom_node_title" style={{ color: (nodeColors2[name] || nodeColors2['unknown'])?.replace('opacity', '1') }}>
+          <Icon type={name} fill={(nodeColors2[name] || nodeColors2['unknown'])?.replace('opacity', '1')} />
           <span className='flex1Box'>{toTitleCase(display_name)}</span>
           <Dropdown
             menu={{
@@ -143,7 +143,7 @@ export default ({ data, selected }) => {
           {!editName?description:<Input autoFocus type="text" onBlur={handleSave} value={description} onChange={onInputChange} />}
         </div>
         <div className="custom_node_content">
-          {input?.length ? <div className="module input" style={{ borderColor: nodeColors2[name]?.replace('opacity', '0.3') }}>
+          {input?.length ? <div className="module input" style={{ borderColor: (nodeColors2[name] || nodeColors2['unknown'])?.replace('opacity', '0.3') }}>
             <div className="module_title">Input</div>
             <div className="fields">
               <div className="line">
@@ -161,19 +161,19 @@ export default ({ data, selected }) => {
                       selectType={name == 'start'}
                     />
                     { name !=='call_link' &&  <MinusCircleOutlined onClick={()=>handleDeleteField('input',index)} />}
-                  </div> 
+                  </div>
                 ))
               }
               { name !=='call_link' && <Button style={{
                 border: '1px solid',
-                borderColor: nodeColors2[name].replace('opacity', '0.4'),
-                color: nodeColors2[name].replace('opacity', '1')
+                borderColor: (nodeColors2[name] || nodeColors2['unknown']).replace('opacity', '0.4'),
+                color: (nodeColors2[name] || nodeColors2['unknown']).replace('opacity', '1')
               }} className='addBtn' onClick={()=>handleAddField('input')} icon={<PlusOutlined />}></Button>}
             </div>
           </div> : ''}
           {
             params?.map((item, index) => (
-              item.show && <div className="module param" key={item.display_name} style={{ borderColor: nodeColors2[name]?.replace('opacity', '0.3') }}>
+              item.show && <div className="module param" key={item.display_name} style={{ borderColor: (nodeColors2[name] || nodeColors2['unknown'])?.replace('opacity', '0.3') }}>
                 <div className="module_title">{toTitleCase(item.display_name)}</div>
                 {/* <div className="fields"></div> */}
                 <div className="fields">
@@ -186,7 +186,7 @@ export default ({ data, selected }) => {
               </div>
             ))
           }
-          {output?.length ? <div className="module output" style={{ borderColor: nodeColors2[name]?.replace('opacity', '0.3') }}>
+          {output?.length ? <div className="module output" style={{ borderColor: (nodeColors2[name] || nodeColors2['unknown'])?.replace('opacity', '0.3') }}>
             <div className="module_title">Output</div>
             <div className="fields">
               <div className="line">
