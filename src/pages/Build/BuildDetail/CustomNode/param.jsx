@@ -1,14 +1,14 @@
 import React, { useEffect, useState, useCallback, useContext, useMemo } from 'react'
 import { SystemContext } from '@/components/CusProvider';
 import './index.less'
-import { toTitleCase, isValidConnection, groupByFamily } from '@/utils'
+import { getUrlParam, toTitleCase, isValidConnection, groupByFamily } from '@/utils'
 import NewInput from './input'
 import { Input, Select } from 'antd'
 import { Handle, Position, useUpdateNodeInternals } from "reactflow";
 import { Tooltip } from 'antd'
 
 export default ({ nodeData, paramData, position, ...other }) => {
-  const appId = new URLSearchParams(window.location.hash.split('?')[1]).get("id"); //id
+  const appId = getUrlParam("id"); //id
   const [showSelectOptions, setShowSelectOptions] = useState(false)
   const {
     left = true,

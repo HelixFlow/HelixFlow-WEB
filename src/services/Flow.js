@@ -7,6 +7,7 @@ import {
   FLOW_DEMO,
   DATA_MANAGE_DATASET_LIST_ALL,
   FLOW_PROCESS,
+  FLOW_RUNS,
   FOR_FLOW,
   FLOW_ITEM,
   OPERATORS_PARAMS
@@ -29,6 +30,48 @@ export async function testRun(id, data) {
     //   Authorization: `Bearer ${auth}`
     // },
     data
+  });
+}
+
+export async function createFlowRun(id, data) {
+  return request(FLOW_RUNS, {
+    method: 'POST',
+    data: {
+      id,
+      ...data,
+    },
+  });
+}
+
+export async function getFlowRun(runId) {
+  return request(`${FLOW_RUNS}/${runId}`, {
+    method: 'GET',
+  });
+}
+
+export async function pauseFlowRun(runId) {
+  return request(`${FLOW_RUNS}/${runId}/pause`, {
+    method: 'POST',
+  });
+}
+
+export async function patchFlowRun(runId, data) {
+  return request(`${FLOW_RUNS}/${runId}`, {
+    method: 'PATCH',
+    data,
+  });
+}
+
+export async function resumeFlowRun(runId, data) {
+  return request(`${FLOW_RUNS}/${runId}/resume`, {
+    method: 'POST',
+    data,
+  });
+}
+
+export async function stopFlowRun(runId) {
+  return request(`${FLOW_RUNS}/${runId}/stop`, {
+    method: 'POST',
   });
 }
 

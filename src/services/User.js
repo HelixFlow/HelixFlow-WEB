@@ -2,15 +2,17 @@ import {
   LOGIN, 
   LOGOUT, 
   USER_GET, 
-  REGISTER,
-  USER_RESOURCE_GET,
-  USER_ROOT_GET,
-  UPDATE_USER,
-  USER_GROUP,
-  USER_SIGN_IN,
-  PERMISSIONS_STATUS
+  REGISTER
 } from '@/constants/api'
 import { request, history} from 'umi';
+
+const emptyResource = {
+  code: 200,
+  result: {
+    menu: [],
+    element: [],
+  },
+};
 
 
 
@@ -59,4 +61,8 @@ export async function getUser() {
     history.push('/404');
     return null;
   }
+}
+
+export async function getUserResource() {
+  return emptyResource;
 }

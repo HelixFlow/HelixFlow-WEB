@@ -46,6 +46,11 @@ export function getUUID() {
   });
 }
 
+export function getUrlParam(name) {
+  const search = window.location.search || window.location.hash.split('?')[1] || '';
+  return new URLSearchParams(search).get(name);
+}
+
 // 链接是否有效
 export function isValidConnection(
   { source, target, sourceHandle, targetHandle },

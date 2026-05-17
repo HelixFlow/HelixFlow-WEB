@@ -1,5 +1,5 @@
 import React, { } from 'react'
-import { Button, Checkbox, Form, Input } from 'antd';
+import { Button, Checkbox, Form, Input, message } from 'antd';
 import './index.less'
 const { TextArea } = Input;
 import { createAndEditFlow } from '@/services/Flow';
@@ -19,7 +19,13 @@ export default (props) => {
       ...editInfo,
       ...values,
     }).then(res => {
+      if (res?.code && res.code !== 200) {
+        message.error(res.msg || '保存失败，请检查后端和数据库');
+        return;
+      }
       onOK()
+    }).catch((error) => {
+      message.error(error?.response?.data?.detail || error?.message || '保存失败，请检查后端和数据库');
     })
 
   };

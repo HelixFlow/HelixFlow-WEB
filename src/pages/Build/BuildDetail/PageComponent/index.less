@@ -95,3 +95,275 @@
     }
   }
 }
+
+.workflowRunStatus {
+  margin-top: 16px;
+  padding: 12px 16px;
+  border: 1px solid rgba(22, 119, 255, 0.16);
+  border-radius: 8px;
+  background: rgba(22, 119, 255, 0.04);
+
+  .runNodes {
+    margin-top: 8px;
+    color: var(--baseTitleFont);
+    font-size: 13px;
+    line-height: 20px;
+  }
+
+  .runError {
+    margin-top: 8px;
+    color: #cf1322;
+    font-size: 13px;
+    line-height: 20px;
+    white-space: pre-wrap;
+  }
+}
+
+.workflowPatchEditor {
+  margin-top: 16px;
+
+  .title {
+    font-size: 16px;
+    color: var(--baseTitleFont);
+    font-weight: 600;
+    line-height: 22px;
+    margin-bottom: 12px;
+  }
+}
+
+.workflowRunDrawer {
+  .ant-drawer-body {
+    background: #f6f8fb;
+    padding: 18px;
+  }
+}
+
+.workflowDebugger {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.debugLaunchPanel,
+.runStatusConsole,
+.debugResultPanel,
+.debugTabs {
+  border: 1px solid #dfe5ee;
+  border-radius: 8px;
+  background: #ffffff;
+}
+
+.debugLaunchPanel {
+  padding: 14px 16px 4px;
+
+  .ant-form-item {
+    margin-bottom: 12px;
+  }
+
+  textarea {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+    font-size: 13px;
+  }
+}
+
+.debugSectionHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 12px;
+
+  &.compact {
+    margin-top: 18px;
+  }
+}
+
+.debugSectionTitle {
+  color: #1f2937;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 20px;
+}
+
+.debugSectionHint {
+  color: #6b7280;
+  font-size: 12px;
+  line-height: 18px;
+  margin-top: 2px;
+}
+
+.copyAction {
+  margin: 0;
+  color: #1677ff;
+  white-space: nowrap;
+}
+
+.runStatusConsole {
+  padding: 16px;
+}
+
+.statusRail {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.statusDot {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: #9ca3af;
+  box-shadow: 0 0 0 4px rgba(156, 163, 175, 0.16);
+
+  &.running {
+    background: #1677ff;
+    box-shadow: 0 0 0 4px rgba(22, 119, 255, 0.14);
+  }
+
+  &.paused {
+    background: #d48806;
+    box-shadow: 0 0 0 4px rgba(212, 136, 6, 0.16);
+  }
+
+  &.completed {
+    background: #389e0d;
+    box-shadow: 0 0 0 4px rgba(56, 158, 13, 0.16);
+  }
+
+  &.failed {
+    background: #cf1322;
+    box-shadow: 0 0 0 4px rgba(207, 19, 34, 0.14);
+  }
+}
+
+.statusTitle {
+  color: #111827;
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 24px;
+}
+
+.statusSubTitle {
+  color: #6b7280;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+  font-size: 12px;
+  line-height: 18px;
+  margin-top: 2px;
+}
+
+.statusGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.statusCell {
+  min-height: 64px;
+  border: 1px solid #edf1f7;
+  border-radius: 6px;
+  background: #fbfcfe;
+  padding: 10px 12px;
+  overflow: hidden;
+
+  span:first-child {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: #6b7280;
+    font-size: 12px;
+    line-height: 18px;
+    margin-bottom: 6px;
+  }
+
+  .ant-typography {
+    display: block;
+    color: #1f2937;
+    font-size: 13px;
+    line-height: 18px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+}
+
+.debugAlert {
+  margin-top: 12px;
+}
+
+.debugTabs {
+  padding: 0 16px 16px;
+
+  .ant-tabs-nav {
+    margin-bottom: 12px;
+  }
+}
+
+.debugTabPane {
+  min-height: 300px;
+}
+
+.runEventList {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-height: 520px;
+  overflow: auto;
+  padding-right: 4px;
+}
+
+.runEvent {
+  border: 1px solid #e7edf5;
+  border-radius: 6px;
+  background: #ffffff;
+  padding: 10px 12px;
+}
+
+.runEventLine {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.runEventTime {
+  color: #6b7280;
+  font-size: 12px;
+}
+
+.runEventMessage {
+  color: #1f2937;
+  font-size: 13px;
+  line-height: 20px;
+  margin-top: 8px;
+}
+
+.runEventData {
+  max-height: 180px;
+  overflow: auto;
+  margin: 8px 0 0;
+  padding: 10px;
+  border-radius: 6px;
+  background: #111827;
+  color: #e5e7eb;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+  font-size: 12px;
+  line-height: 18px;
+  white-space: pre-wrap;
+}
+
+.debugResultPanel {
+  padding: 16px;
+}
+
+@media (max-width: 960px) {
+  .workflowRunDrawer {
+    .ant-drawer-content-wrapper {
+      width: 100vw !important;
+    }
+  }
+
+  .statusGrid {
+    grid-template-columns: 1fr;
+  }
+}

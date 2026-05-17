@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useContext, useCallback, useRef } from 'react'
 import './index.less'
 import { SystemContext } from '@/components/CusProvider';
-import { isValidConnection, validateNodes } from '@/utils';
+import { getUrlParam, isValidConnection, validateNodes } from '@/utils';
 import CustomNode from '../CustomNode'
 import SiderBar from '../SiderBar'
 import { history } from 'umi';
@@ -43,7 +43,7 @@ export default ({ flow }) => {
   );
 
   const edgeUpdateSuccessful = useRef(true);
-  const appId = new URLSearchParams(window.location.hash.split('?')[1]).get("id"); //id
+  const appId = getUrlParam("id"); //id
 
   useEffect(() => {
     return () => {
@@ -199,8 +199,8 @@ export default ({ flow }) => {
       <div className="flowPage_header">
         <Back className='hoverIcon back' onClick={onBack} />
         <div className="app_name">{flow.name}</div>
-        <TestHistory disabled={flow.status == '2'} checkFlow={checkFlow} onSave={onSave} />
-        <Button type='primary' disabled={flow.status == '2'} onClick={() => onSave()} icon={<SaveOutlined />}>保存</Button>
+        <TestHistory disabled={flow.status == 2} checkFlow={checkFlow} onSave={onSave} />
+        <Button type='primary' disabled={flow.status == 2} onClick={() => onSave()} icon={<SaveOutlined />}>保存</Button>
       </div>
       <div className="mainContent">
         <FloatButton

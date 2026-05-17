@@ -16,6 +16,7 @@ export const USER_GET = `${ModuleKey.auth}/info`; // 获取我的
 
 //流程
 export const FLOW_PROCESS = `${ModuleKey.flow}/process`; // 节点列表
+export const FLOW_RUNS = `${ModuleKey.flow}/runs`; // 试运行会话
 export const NODE_LIST = `${ModuleKey.flow}/all`; // 节点列表
 export const FLOW_LIST = `${ModuleKey.flow}/`; // flow列表 创建 编辑 删除 详情
 export const FLOW_ITEM = `${ModuleKey.flow}/flow_id`; // flow列表 创建 编辑 删除 详情
