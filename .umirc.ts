@@ -1,21 +1,30 @@
 import { defineConfig } from "umi";
 import Routes from "./config/route";
+const fs = require("fs");
+const path = require("path");
+
+const settingPath = path.resolve(__dirname, "setting.ts");
 let setting: any = {};
 
-try {
-  setting = require("./setting.ts");
-  console.log("Loaded setting.ts successfully:", setting);
-} catch (error) {
-  console.error("Error loading setting.ts:", error);
-  setting = {};
+if (fs.existsSync(settingPath)) {
+  try {
+    setting = require("./setting.ts");
+  } catch (error: any) {
+    if (error?.code !== "MODULE_NOT_FOUND") {
+      console.warn("Failed to load optional setting.ts, falling back to defaults:", error);
+    }
+    setting = {};
+  }
 }
+
+const proxyAddress = setting?.proxyAddress || process.env.PROXY_ADDRESS || "http://localhost:11110";
 
 // console.log('获取环境变量', process.env);
 export default defineConfig({
   routes: Routes,
   proxy: {
     "/helixflow": {
-      target: setting?.proxyAddress || "http://localhost:11110",
+      target: proxyAddress,
       changeOrigin: true,
       secure: false,
       // pathRewrite: {
