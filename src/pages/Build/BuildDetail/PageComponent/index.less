@@ -285,10 +285,32 @@
     text-overflow: ellipsis;
     white-space: nowrap;
   }
+
+  &.danger {
+    border-color: #ffccc7;
+    background: #fff7f6;
+
+    span:first-child,
+    .ant-typography {
+      color: #cf1322;
+    }
+  }
 }
 
 .debugAlert {
   margin-top: 12px;
+}
+
+.errorDetails {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+
+  .errorMessage {
+    margin-top: 4px;
+    white-space: pre-wrap;
+    word-break: break-word;
+  }
 }
 
 .debugTabs {

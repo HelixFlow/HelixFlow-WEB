@@ -116,9 +116,37 @@ export function toNormalCase(str) {
     .join(" ");
 }
 
+function isEmptyValue(value) {
+  return value === null || value === undefined || value === '';
+}
+
+function collectReferenceValues(nodes) {
+  const references = new Set();
+  nodes.forEach((node) => {
+    const { input = [], output = [], params = [] } = node.data || {};
+    const fields = [...(input || []), ...(output || []), ...(params || [])];
+    fields.forEach((item) => {
+      if (item.field_type === 'condition') {
+        if (item.value?.reference) {
+          references.add(item.value.reference);
+        }
+        if (item.value?.compare_reference && item.value?.compare_value) {
+          references.add(item.value.compare_value);
+        }
+        return;
+      }
+      if (item.reference && item.value) {
+        references.add(item.value);
+      }
+    });
+  });
+  return references;
+}
+
 export function validateNode(
   n,
-  edges
+  edges,
+  referencedFields = new Set()
 ) {
   //必填项
   const { display_name,input,output,params,name } = n.data;
@@ -128,18 +156,20 @@ export function validateNode(
   required.forEach((item) => {
     if(item.field_type == 'condition'){
       if(item.display_name !== 'else'){
-        if(item.value.reference === null || item.value.reference === undefined || item.value.reference === '') {
+        if(isEmptyValue(item.value.reference)) {
           errors.push(`${display_name} 缺失了 ${toNormalCase(item.display_name)} 的引用值.`)
         }
-        if(item.value.compare === null || item.value.compare === undefined || item.value.compare === '') {
+        if(isEmptyValue(item.value.compare)) {
           errors.push(`${display_name} 缺失了 ${toNormalCase(item.display_name)} 的比较符.`)
         }
-        if(!['is empty','is not empty'].includes(item.value.compare)  && (item.value.compare_value === null || item.value.compare_value === undefined || item.value.compare_value === '')) {
+        if(!['is empty','is not empty'].includes(item.value.compare)  && isEmptyValue(item.value.compare_value)) {
           errors.push(`${display_name} 缺失了 ${toNormalCase(item.display_name)} 的比较值.`)
         }
       }
 
-    }else if(item.value === null || item.value === undefined || item.value === '') {
+    }else if(output?.includes(item) && referencedFields.has(`${display_name}/${item.name}`)) {
+      return;
+    }else if(isEmptyValue(item.value)) {
       errors.push(`${display_name} 缺失了 ${toNormalCase(item.display_name)}.`)
     }
   })
@@ -177,7 +207,8 @@ export function validateNodes(reactFlowInstance) {
     ];
   }
   console.log(reactFlowInstance,edges,nodes)
-  return nodes.flatMap((n) => validateNode(n, edges));
+  const referencedFields = collectReferenceValues(nodes);
+  return nodes.flatMap((n) => validateNode(n, edges, referencedFields));
 }
 
 //关联节点

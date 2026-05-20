@@ -248,6 +248,19 @@ export default ({ checkFlow, onSave, disabled }) => {
   const currentState = runInfo?.state || {}
   const fieldValues = useMemo(() => getFieldValues(currentState), [currentState])
   const rawResponse = runInfo || result || {}
+  const latestFailedEvent = useMemo(() => {
+    const events = runInfo?.events || []
+    return events.slice().reverse().find(event => event.type === 'failed')
+  }, [runInfo])
+  const failedNodeText = runInfo?.failed_node
+    || latestFailedEvent?.data?.node
+    || runInfo?.active_nodes?.[0]
+    || runInfo?.next_nodes?.[0]
+    || ''
+  const errorTypeText = runInfo?.error_type || latestFailedEvent?.data?.error_type || ''
+  const activeNodesText = runInfo?.active_nodes?.length ? runInfo.active_nodes.join(', ') : '-'
+  const focusNodeLabel = runInfo?.status === FAILED ? '失败节点' : '正在执行'
+  const focusNodeText = runInfo?.status === FAILED ? (failedNodeText || '未识别') : activeNodesText
 
   const onDrawerClose = () => {
     if (isRunning && runInfo?.run_id) {
@@ -541,6 +554,10 @@ export default ({ checkFlow, onSave, disabled }) => {
                 <span>下一节点</span>
                 <Text>{nextNodesText}</Text>
               </div>
+              <div className={`statusCell ${runInfo?.status === FAILED ? 'danger' : ''}`}>
+                <span>{focusNodeLabel}</span>
+                <Text>{focusNodeText}</Text>
+              </div>
               <div className="statusCell">
                 <span><ClockCircleOutlined /> Started</span>
                 <Text>{formatTime(runInfo?.started_at)}</Text>
@@ -558,7 +575,21 @@ export default ({ checkFlow, onSave, disabled }) => {
                 <Text>{result ? Object.keys(result || {}).length : Object.keys(runInfo?.result || {}).length}</Text>
               </div>
             </div>
-            {runInfo?.error ? <Alert className="debugAlert" type="error" showIcon message="运行失败" description={runInfo.error} /> : null}
+            {runInfo?.error ? (
+              <Alert
+                className="debugAlert"
+                type="error"
+                showIcon
+                message="运行失败"
+                description={(
+                  <div className="errorDetails">
+                    <div><Text strong>节点：</Text><Text>{failedNodeText || '未识别'}</Text></div>
+                    <div><Text strong>类型：</Text><Text>{errorTypeText || '-'}</Text></div>
+                    <div className="errorMessage">{runInfo.error}</div>
+                  </div>
+                )}
+              />
+            ) : null}
             {isPaused ? <Alert className="debugAlert" type="warning" showIcon message="Run 已暂停" description="可以在“修正”页修改 inputs、fields 或 configurable，然后点击继续运行。" /> : null}
           </div>
 

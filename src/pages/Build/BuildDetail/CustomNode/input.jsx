@@ -50,7 +50,7 @@ export default ({ value, onChange, type, data, nodeData, name, size = 'middle' ,
 
 
   return (
-    <div className={`build_custom_node_input_line build_custom_node_input_line_${size}`}>
+    <div className={`build_custom_node_input_line build_custom_node_input_line_${size} nodrag nopan`}>
       {/* 多行输入 */}
       {
         selectType ? (

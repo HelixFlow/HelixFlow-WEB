@@ -140,7 +140,7 @@ export default ({ data, selected }) => {
           </Dropdown>
         </div>
         <div className="custom_node_desc">
-          {!editName?description:<Input autoFocus type="text" onBlur={handleSave} value={description} onChange={onInputChange} />}
+          {!editName?description:<Input className="nodrag nopan" autoFocus type="text" onBlur={handleSave} value={description} onChange={onInputChange} />}
         </div>
         <div className="custom_node_content">
           {input?.length ? <div className="module input" style={{ borderColor: (nodeColors2[name] || nodeColors2['unknown'])?.replace('opacity', '0.3') }}>
