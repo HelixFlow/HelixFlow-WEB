@@ -9,6 +9,14 @@ import { UpOutlined, DownOutlined } from '@ant-design/icons'
 import { getUUID } from '@/utils';
 import {fieldOptions} from '@/constants'
 
+const SECRET_KEYWORDS = ['api_key', 'apikey', 'access_key', 'secret', 'token', 'password', 'authorization'];
+
+const isSecretField = (name) => {
+  if (!name) return false;
+  const normalized = String(name).toLowerCase().replace(/-/g, '_');
+  return SECRET_KEYWORDS.some((keyword) => normalized.includes(keyword));
+}
+
 export default ({ value, onChange, type, data, nodeData, name, size = 'middle' , selectType = false,editable = true }) => {
   const { name:nodeName } = nodeData;
   const [showSelectOptions, setShowSelectOptions] = useState(false)
@@ -141,6 +149,7 @@ export default ({ value, onChange, type, data, nodeData, name, size = 'middle' ,
                   value={Value}
                   onChange={onChange}
                   readOnly={!editable}
+                  secret={isSecretField(name) || isSecretField(data?.name) || isSecretField(data?.display_name)}
                 />
               </div>
             </div>

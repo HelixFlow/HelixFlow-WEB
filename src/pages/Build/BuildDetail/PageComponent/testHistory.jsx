@@ -37,6 +37,52 @@ const COMPLETED = 'completed';
 const STOPPED = 'stopped';
 const FAILED = 'failed';
 const TERMINAL_STATUS = [COMPLETED, STOPPED, FAILED];
+const MASKED_SECRET = '********';
+const SECRET_KEYWORDS = [
+  'api_key',
+  'apikey',
+  'access_key',
+  'secret',
+  'token',
+  'password',
+  'authorization',
+];
+
+const isSecretKey = (key) => {
+  if (!key) return false;
+  const normalized = String(key).toLowerCase().replace(/-/g, '_');
+  return SECRET_KEYWORDS.some((keyword) => normalized.includes(keyword));
+}
+
+const maskSecretValue = (value) => {
+  if (value === null || value === undefined || value === '') return value;
+  return MASKED_SECRET;
+}
+
+const maskSecrets = (data, keyPath = '') => {
+  if (isSecretKey(keyPath)) {
+    return maskSecretValue(data);
+  }
+  if (Array.isArray(data)) {
+    return data.map((item) => maskSecrets(item, keyPath));
+  }
+  if (data && typeof data === 'object') {
+    return Object.keys(data).reduce((result, key) => {
+      const nextPath = keyPath ? `${keyPath}.${key}` : key;
+      result[key] = maskSecrets(data[key], nextPath);
+      return result;
+    }, {});
+  }
+  return data;
+}
+
+const maskJsonString = (value) => {
+  try {
+    return JSON.stringify(maskSecrets(JSON.parse(value || '{}')), null, 2);
+  } catch (err) {
+    return value || '{}';
+  }
+}
 
 const STATUS_META = {
   [RUNNING]: { color: 'processing', label: '运行中' },
@@ -46,7 +92,7 @@ const STATUS_META = {
   [FAILED]: { color: 'error', label: '失败' },
 }
 
-const stringify = (data) => JSON.stringify(data ?? {}, null, 2)
+const stringify = (data) => JSON.stringify(maskSecrets(data ?? {}), null, 2)
 
 const formatTime = (value) => {
   if (!value) return '-'
@@ -87,7 +133,8 @@ export default ({ checkFlow, onSave, disabled }) => {
   }, [])
 
   const text = useMemo(() => {
-    return `curl -X 'POST'  \\\n'${url}${appId}' \\\n-H 'accept: application/json'  \\\n-H 'Content-Type: application/json' \\\n-d '${values.data}'`
+    const maskedData = maskJsonString(values.data);
+    return `curl -X 'POST'  \\\n'${url}${appId}' \\\n-H 'accept: application/json'  \\\n-H 'Content-Type: application/json' \\\n-d '${maskedData}'`
   }, [url, appId, values])
 
   const onOpen = () => {
@@ -118,7 +165,7 @@ export default ({ checkFlow, onSave, disabled }) => {
   }
 
   const buildPatchTemplate = (run) => {
-    return stringify({
+    return stringify(run?.editable_patch?.template || run?.editable_patch?.editable || {
       inputs: run?.inputs || {},
       fields: getFieldValues(run?.state),
       configurable: run?.configurable || {},
@@ -129,6 +176,12 @@ export default ({ checkFlow, onSave, disabled }) => {
     return getFlowRun(runId).then(res => {
       const nextRun = normalizeRunResponse(res)
       setRunInfo(nextRun)
+      if (nextRun?.status === PAUSED) {
+        setLoading(false)
+        if (!nextRun.worker_alive) {
+          clearPollTimer()
+        }
+      }
       if (nextRun?.status === PAUSED && options.updatePatch !== false) {
         setPatchText(buildPatchTemplate(nextRun))
         setActiveTab('patch')
@@ -186,12 +239,16 @@ export default ({ checkFlow, onSave, disabled }) => {
       const run = normalizeRunResponse(res)
       setRunInfo(run)
       if (run.status === PAUSED) {
-        clearPollTimer()
         setLoading(false)
         setPatchText(buildPatchTemplate(run))
         setActiveTab('patch')
+        if (run.worker_alive) {
+          startPolling(run.run_id)
+        } else {
+          clearPollTimer()
+        }
       } else {
-        message.info('已请求暂停，当前节点完成后会停在下一节点前')
+        message.info('已请求暂停，后台调用返回后会丢弃结果并回到当前节点前')
       }
     }).catch((err) => {
       message.error(err.message || '暂停失败')
@@ -200,6 +257,10 @@ export default ({ checkFlow, onSave, disabled }) => {
 
   const onResume = () => {
     if (!runInfo?.run_id) return
+    if (runInfo?.worker_alive) {
+      message.info('后台调用还在返回中，暂停结果会被丢弃；请稍后再继续运行')
+      return
+    }
     let patch = {}
     try {
       patch = JSON.parse(patchText || '{}')
@@ -261,6 +322,15 @@ export default ({ checkFlow, onSave, disabled }) => {
   const activeNodesText = runInfo?.active_nodes?.length ? runInfo.active_nodes.join(', ') : '-'
   const focusNodeLabel = runInfo?.status === FAILED ? '失败节点' : '正在执行'
   const focusNodeText = runInfo?.status === FAILED ? (failedNodeText || '未识别') : activeNodesText
+  const editablePatch = runInfo?.editable_patch || {}
+  const lockedPatch = editablePatch?.locked || {}
+  const editableNote = editablePatch?.note || '只有暂停状态可以应用修正。'
+  const editableNodesText = editablePatch?.editable_nodes?.length ? editablePatch.editable_nodes.join(', ') : '-'
+  const hasLockedPatch = !!(
+    Object.keys(lockedPatch?.inputs || {}).length
+    || Object.keys(lockedPatch?.fields || {}).length
+    || Object.keys(lockedPatch?.configurable || {}).length
+  )
 
   const onDrawerClose = () => {
     if (isRunning && runInfo?.run_id) {
@@ -344,17 +414,26 @@ export default ({ checkFlow, onSave, disabled }) => {
               type="info"
               showIcon
               message="只有暂停后才会应用修正"
-              description="点击暂停后，当前节点会先跑完，运行停在下一节点前；此时可以修改 inputs、fields 或 configurable 后继续。"
+              description={editableNote}
+            />
+          )}
+          {isPaused && (
+            <Alert
+              className="debugAlert"
+              type="warning"
+              showIcon
+              message={`当前可修改节点：${editableNodesText}`}
+              description={editableNote}
             />
           )}
           <div className="debugSectionHeader">
             <div>
               <div className="debugSectionTitle">Patch JSON</div>
-              <div className="debugSectionHint">支持 inputs、fields、state.fields、config、configurable。</div>
+              <div className="debugSectionHint">这里只显示当前暂停点之后仍会生效的字段；已执行节点请重新 Test Run。</div>
             </div>
             <Space size={8}>
               {runInfo && <Button size="small" onClick={() => setPatchText(buildPatchTemplate(runInfo))}>重置模板</Button>}
-              <Paragraph className="copyAction" copyable={{ text: patchText }}>复制</Paragraph>
+              <Paragraph className="copyAction" copyable={{ text: maskJsonString(patchText) }}>复制</Paragraph>
             </Space>
           </div>
           <AceEditor
@@ -377,6 +456,17 @@ export default ({ checkFlow, onSave, disabled }) => {
               enableSnippets: false,
             }}
           />
+          {hasLockedPatch ? (
+            <>
+              <div className="debugSectionHeader compact">
+                <div>
+                  <div className="debugSectionTitle">不可修改</div>
+                  <div className="debugSectionHint">这些内容属于已执行节点或当前暂停点之后不会读取的字段，修改不会生效。</div>
+                </div>
+              </div>
+              {renderJsonBlock('workflow-locked-patch', lockedPatch, '240px')}
+            </>
+          ) : null}
         </div>
       ),
     },
@@ -483,7 +573,11 @@ export default ({ checkFlow, onSave, disabled }) => {
               </Tooltip>
             )}
             {isRunning && <Button onClick={onPause} icon={<PauseCircleOutlined />}>暂停</Button>}
-            {isPaused && <Button type="primary" onClick={onResume} icon={<PlayCircleOutlined />}>继续运行</Button>}
+            {isPaused && (
+              <Tooltip title={runInfo?.worker_alive ? '后台调用还在返回中，稍后才能继续' : '继续运行'}>
+                <Button type="primary" onClick={onResume} disabled={runInfo?.worker_alive} icon={<PlayCircleOutlined />}>继续运行</Button>
+              </Tooltip>
+            )}
             {(isRunning || isPaused) && <Button danger onClick={onStop} icon={<StopOutlined />}>终止</Button>}
             <Button type="primary" onClick={onTest} loading={loading && !isPaused} disabled={loading || isRunning}>
               Test Run
@@ -590,7 +684,7 @@ export default ({ checkFlow, onSave, disabled }) => {
                 )}
               />
             ) : null}
-            {isPaused ? <Alert className="debugAlert" type="warning" showIcon message="Run 已暂停" description="可以在“修正”页修改 inputs、fields 或 configurable，然后点击继续运行。" /> : null}
+            {isPaused ? <Alert className="debugAlert" type="warning" showIcon message="Run 已暂停" description={editableNote} /> : null}
           </div>
 
           <Tabs

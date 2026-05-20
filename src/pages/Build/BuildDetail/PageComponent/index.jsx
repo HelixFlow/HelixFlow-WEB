@@ -10,6 +10,7 @@ import ReactFlow, {
   Background,
   Controls,
   addEdge,
+  MarkerType,
   updateEdge,
   useEdgesState,
   useNodesState,
@@ -27,6 +28,31 @@ const nodeTypes = {
   genericNode: CustomNode,
 };
 
+const directedEdgeDefaults = {
+  animated: true,
+  className: "stroke-foreground stroke-connection",
+  markerEnd: {
+    type: MarkerType.ArrowClosed,
+    width: 18,
+    height: 18,
+    color: "var(--baseTitleFont)",
+  },
+  style: {
+    stroke: "var(--baseTitleFont)",
+    strokeWidth: 1.6,
+  },
+};
+
+const withDirectionalEdge = (edge) => ({
+  ...directedEdgeDefaults,
+  ...edge,
+  markerEnd: edge.markerEnd || directedEdgeDefaults.markerEnd,
+  style: {
+    ...directedEdgeDefaults.style,
+    ...(edge.style || {}),
+  },
+  className: edge.className || directedEdgeDefaults.className,
+});
 
 export default ({ flow }) => {
   const {
@@ -39,7 +65,7 @@ export default ({ flow }) => {
     flow.data?.nodes ?? []
   );
   const [edges, setEdges, onEdgesChange] = useEdgesState(
-    flow.data?.edges ?? []
+    (flow.data?.edges ?? []).map(withDirectionalEdge)
   );
 
   const edgeUpdateSuccessful = useRef(true);
@@ -69,7 +95,7 @@ export default ({ flow }) => {
   const onEdgeUpdate = useCallback(
     (oldEdge, newConnection) => {
       edgeUpdateSuccessful.current = true;
-      setEdges((els) => updateEdge(oldEdge, newConnection, els));
+      setEdges((els) => updateEdge(oldEdge, withDirectionalEdge(newConnection), els));
     },
     [reactFlowInstance, setEdges]
   );
@@ -92,14 +118,11 @@ export default ({ flow }) => {
       }
       setEdges((eds) =>
         addEdge(
-          {
+          withDirectionalEdge({
             ...params,
-            style: { stroke: "var(--baseTitleFont)" },
-            className: "stroke-foreground  stroke-connection",
             id: `${params.source}-${params.target}`,
             // type: 'smoothstep',
-            animated: true // params.targetHandle.split("|")[0] === "Text",
-          },
+          }),
           eds
         )
       );
@@ -229,6 +252,7 @@ export default ({ flow }) => {
             onEdgeUpdateStart={onEdgeUpdateStart}
             onEdgeUpdate={onEdgeUpdate}
             onEdgeUpdateEnd={onEdgeUpdateEnd}
+            defaultEdgeOptions={directedEdgeDefaults}
             onDrop={onDrop}
             onDragOver={(e) => e.preventDefault()}
             minZoom={0.01}

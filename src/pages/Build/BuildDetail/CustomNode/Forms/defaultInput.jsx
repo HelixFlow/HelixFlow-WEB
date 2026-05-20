@@ -3,7 +3,7 @@ import './index.less'
 import { Select, Input,Cascader } from 'antd'
 import { SystemContext } from '@/components/CusProvider';
 
-export default ( {type = 'reference',value,onChange,nodeId,noSelect = false,readOnly=false} ) => {
+export default ( {type = 'reference',value,onChange,nodeId,noSelect = false,readOnly=false,secret=false} ) => {
   const [showSelect1, setShowSelect1] = useState(false)
   const [showSelect2, setShowSelect2] = useState(false)
   const {
@@ -96,7 +96,14 @@ export default ( {type = 'reference',value,onChange,nodeId,noSelect = false,read
               onFocus={() => setShowSelect2(true)}
               open={showSelect2}
               disabled={readOnly}
-            />:<Input placeholder='请输入 value' value={value} onChange={onChangeInput} 
+            />:secret ? <Input.Password
+              placeholder='请输入 value'
+              value={value}
+              onChange={onChangeInput}
+              readOnly={readOnly}
+              visibilityToggle={false}
+              autoComplete="new-password"
+            /> : <Input placeholder='请输入 value' value={value} onChange={onChangeInput} 
             readOnly={readOnly}/>}
     </div>
   )
