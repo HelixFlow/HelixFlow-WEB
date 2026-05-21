@@ -152,9 +152,8 @@ export default ({ data, selected }) => {
               </div>
               {
                 input?.map((item, index) => (
-                  item.show && <div className="build_custom_node_input_line_box">
+                  item.show && <div className="build_custom_node_input_line_box" key={`${item.name || item.display_name || 'input'}-${index}`}>
                     <Param
-                      key={item.display_name}
                       nodeData={data}
                       paramData={item}
                       position={['input', index]}
@@ -195,9 +194,8 @@ export default ({ data, selected }) => {
               </div>
               {
                 output?.map((item, index) => (
-                  item.show && <div className="build_custom_node_input_line_box">
+                  item.show && <div className="build_custom_node_input_line_box" key={`${item.name || item.display_name || 'output'}-${index}`}>
                     <Param
-                      key={item.display_name}
                       nodeData={data}
                       paramData={item}
                       position={['output', index]}

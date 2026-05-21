@@ -5,6 +5,9 @@ const ModuleKey = {
   auth: server.api + "/user",
   flow: server.api + "/flows",
   operators: server.api + "/operators",
+  assets: server.api + "/assets",
+  knowledge: server.api + "/knowledge",
+  businessAnalysis: server.api + "/business-analysis",
 };
 
 //账号
@@ -24,6 +27,10 @@ export const VALIDATE_PROMPT = `${ModuleKey.flow}/validate/prompt`; // 提示词
 export const VALIDATE_CODE = `${ModuleKey.flow}/validate/code`; //  code
 export const FLOW_PARAMS = `${ModuleKey.flow}/flow_id/params`; //  获取flow参数
 export const OPERATORS_PARAMS = `${ModuleKey.operators}/all`; //  算子列表
+export const ASSET_DDL_PARSE = `${ModuleKey.assets}/ddl/parse`; // DDL解析
+export const ASSET_TABLES = `${ModuleKey.assets}/tables`; // 表资产
+export const KNOWLEDGE_INGEST = `${ModuleKey.knowledge}/ingest`; // 知识库写入
+export const BUSINESS_ANALYSIS_RUNS = `${ModuleKey.businessAnalysis}/runs`; // 业务分析运行
 
 
 export const FLOW_DEMO = `${ModuleKey.flow}/manage/flow_demo`; //LLM模型对话

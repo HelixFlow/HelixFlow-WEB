@@ -25,6 +25,11 @@ export default [
     component: "@/pages/Build",
   },
   {
+    path: "/businessAnalyzer",
+    name: "业务分析器",
+    component: "@/pages/BusinessAnalyzer",
+  },
+  {
     path: "/buildApp/buildDetail",
     name: "构建应用详情",
     hideInMenu: true,
