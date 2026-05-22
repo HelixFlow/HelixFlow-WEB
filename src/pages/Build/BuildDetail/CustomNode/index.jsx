@@ -172,7 +172,7 @@ export default ({ data, selected }) => {
           </div> : ''}
           {
             params?.map((item, index) => (
-              item.show && <div className="module param" key={item.display_name} style={{ borderColor: (nodeColors2[name] || nodeColors2['unknown'])?.replace('opacity', '0.3') }}>
+              item.show && <div className="module param" key={`${item.name || item.display_name || 'param'}-${index}`} style={{ borderColor: (nodeColors2[name] || nodeColors2['unknown'])?.replace('opacity', '0.3') }}>
                 <div className="module_title">{toTitleCase(item.display_name)}</div>
                 {/* <div className="fields"></div> */}
                 <div className="fields">

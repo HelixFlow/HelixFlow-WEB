@@ -1,44 +1,331 @@
 .buildDetailPage {
   height: 100vh;
+  --console-bg: #f4f6f8;
+  --console-panel: #ffffff;
+  --console-panel-subtle: #f8fafc;
+  --console-border: #d9e0ea;
+  --console-border-soft: #e7edf5;
+  --console-ink: #111827;
+  --console-text: #334155;
+  --console-muted: #64748b;
+  --console-accent: #0f766e;
+  --console-blue: #2563eb;
+  --console-shadow: 0 18px 44px rgba(15, 23, 42, 0.08);
 
   .flowPage {
     height: 100%;
     position: relative;
-    background-color: var(--baseBgColor);
+    background:
+      linear-gradient(180deg, #f8fafc 0%, var(--console-bg) 100%);
 
     .flowPage_header {
       display: flex;
       align-items: center;
-      height: 68px;
-      background-color: var(--baseContentColor);
-      padding: 24px;
+      height: 72px;
+      background: var(--console-panel);
+      border-bottom: 1px solid var(--console-border-soft);
+      padding: 0 24px;
       box-sizing: border-box;
-      gap: 8px;
+      gap: 12px;
+
+      .back {
+        width: 30px;
+        height: 30px;
+        border-radius: 8px;
+        background: #f8fafc;
+      }
+
+      .app_identity {
+        flex: 1;
+        min-width: 0;
+      }
 
       .app_name {
-        flex: 1;
-        font-size: 14px;
-        color: var(--baseTitleFont);
-        font-weight: 600;
-        line-height: 20px;
+        color: var(--console-ink);
+        font-size: 15px;
+        font-weight: 720;
+        line-height: 21px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      .app_subtitle {
+        margin-top: 2px;
+        color: var(--console-muted);
+        font-size: 12px;
+        line-height: 18px;
+      }
+
+      .flowHeaderMeta {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        padding-right: 8px;
+      }
+
+      .ant-btn {
+        border-radius: 8px;
+      }
+
+      .ant-btn-primary {
+        background: #111827;
+        border-color: #111827;
+        box-shadow: none;
       }
     }
 
     .mainContent {
-      display: flex;
-      height: calc(100% - 68px);
+      display: grid;
+      grid-template-columns: 264px minmax(560px, 1fr) 292px;
+      gap: 16px;
+      height: calc(100% - 72px);
+      padding: 16px 20px 20px 0;
+      box-sizing: border-box;
+      overflow: hidden;
 
       .sider {
-        margin-top: 24px;
-        margin-bottom: 24px;
-      }
-
-      .react-flow {
-        .flow-bg {
-          // background-color:  rgba(245, 245, 245, 1);
-        }
+        margin: 0;
       }
     }
+  }
+}
+
+.workflowCanvasShell,
+.workflowInspector {
+  min-width: 0;
+  border: 1px solid var(--console-border);
+  border-radius: 14px;
+  background: var(--console-panel);
+  box-shadow: var(--console-shadow);
+  overflow: hidden;
+}
+
+.workflowCanvasShell {
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr) auto;
+}
+
+.canvasTopbar,
+.canvasBottombar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--console-border-soft);
+  background: linear-gradient(180deg, #ffffff 0%, #fbfcfe 100%);
+}
+
+.canvasTitle {
+  color: var(--console-ink);
+  font-size: 14px;
+  font-weight: 760;
+  line-height: 20px;
+}
+
+.canvasHint {
+  margin-top: 2px;
+  color: var(--console-muted);
+  font-size: 12px;
+  line-height: 18px;
+}
+
+.canvasStats {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+
+  span {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    min-height: 28px;
+    padding: 4px 9px;
+    border: 1px solid #dce4ee;
+    border-radius: 999px;
+    background: #f8fafc;
+    color: var(--console-text);
+    font-size: 12px;
+    font-weight: 650;
+  }
+}
+
+.workflowCanvasBody {
+  position: relative;
+  min-height: 0;
+  background:
+    linear-gradient(90deg, rgba(15, 23, 42, 0.025) 1px, transparent 1px),
+    linear-gradient(rgba(15, 23, 42, 0.025) 1px, transparent 1px),
+    #f8fafc;
+  background-size: 28px 28px;
+
+  .react-flow {
+    width: 100%;
+    height: 100%;
+  }
+
+  .react-flow__pane {
+    cursor: grab;
+  }
+
+  .react-flow__pane.dragging {
+    cursor: grabbing;
+  }
+
+  .react-flow__edge-path {
+    stroke: #334155;
+    stroke-width: 1.8;
+  }
+
+  .react-flow__edge.animated .react-flow__edge-path {
+    stroke-dasharray: 8 8;
+    animation-duration: 900ms;
+  }
+
+  .flow-control {
+    border: 1px solid var(--console-border);
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 10px 24px rgba(15, 23, 42, 0.08);
+
+    button {
+      border-bottom-color: var(--console-border-soft);
+      background: #ffffff;
+    }
+  }
+}
+
+.canvasBottombar {
+  justify-content: flex-start;
+  border-top: 1px solid var(--console-border-soft);
+  border-bottom: 0;
+  padding: 9px 16px;
+  background: #fbfcfe;
+
+  span {
+    color: var(--console-muted);
+    font-size: 12px;
+    line-height: 18px;
+  }
+}
+
+.workflowInspector {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 14px;
+  background: #fbfcfe;
+}
+
+.inspectorHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--console-border-soft);
+}
+
+.inspectorTitle {
+  color: var(--console-ink);
+  font-size: 14px;
+  font-weight: 760;
+  line-height: 20px;
+}
+
+.inspectorHint {
+  margin-top: 2px;
+  color: var(--console-muted);
+  font-size: 12px;
+}
+
+.inspectorCard {
+  padding: 13px;
+  border: 1px solid var(--console-border-soft);
+  border-radius: 12px;
+  background: #ffffff;
+}
+
+.inspectorCardTitle {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 10px;
+  color: var(--console-text);
+  font-size: 12px;
+  font-weight: 750;
+  text-transform: uppercase;
+}
+
+.selectedNodeCard p {
+  margin: 8px 0 0;
+  color: var(--console-muted);
+  font-size: 12px;
+  line-height: 19px;
+}
+
+.selectedNodeName {
+  color: var(--console-ink);
+  font-size: 16px;
+  font-weight: 760;
+  line-height: 22px;
+  word-break: break-word;
+}
+
+.selectedNodeType {
+  margin-top: 4px;
+  color: var(--console-accent);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+  font-size: 12px;
+}
+
+.inspectorGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.inspectorMetric {
+  display: grid;
+  gap: 4px;
+  min-height: 62px;
+  padding: 10px 12px;
+  border: 1px solid var(--console-border-soft);
+  border-radius: 12px;
+  background: #ffffff;
+
+  span {
+    color: var(--console-muted);
+    font-size: 11px;
+    font-weight: 650;
+    text-transform: uppercase;
+  }
+
+  strong {
+    color: var(--console-ink);
+    font-size: 20px;
+    line-height: 24px;
+  }
+}
+
+.inspectorList {
+  display: grid;
+  gap: 8px;
+
+  span {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    color: var(--console-muted);
+    font-size: 12px;
+    line-height: 18px;
+  }
+
+  b {
+    color: var(--console-text);
+    font-weight: 700;
   }
 }
 
@@ -132,9 +419,13 @@
 }
 
 .workflowRunDrawer {
+  .ant-drawer-header {
+    border-bottom: 1px solid #e7edf5;
+  }
+
   .ant-drawer-body {
-    background: #f6f8fb;
-    padding: 18px;
+    background: #f4f6f8;
+    padding: 20px;
   }
 }
 
@@ -148,13 +439,14 @@
 .runStatusConsole,
 .debugResultPanel,
 .debugTabs {
-  border: 1px solid #dfe5ee;
-  border-radius: 8px;
+  border: 1px solid #d9e0ea;
+  border-radius: 12px;
   background: #ffffff;
+  box-shadow: 0 12px 28px rgba(15, 23, 42, 0.05);
 }
 
 .debugLaunchPanel {
-  padding: 14px 16px 4px;
+  padding: 16px 18px 6px;
 
   .ant-form-item {
     margin-bottom: 12px;
@@ -179,9 +471,9 @@
 }
 
 .debugSectionTitle {
-  color: #1f2937;
+  color: #111827;
   font-size: 14px;
-  font-weight: 600;
+  font-weight: 760;
   line-height: 20px;
 }
 
@@ -194,7 +486,7 @@
 
 .copyAction {
   margin: 0;
-  color: #1677ff;
+  color: #0f766e;
   white-space: nowrap;
 }
 
@@ -217,8 +509,8 @@
   box-shadow: 0 0 0 4px rgba(156, 163, 175, 0.16);
 
   &.running {
-    background: #1677ff;
-    box-shadow: 0 0 0 4px rgba(22, 119, 255, 0.14);
+    background: #2563eb;
+    box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.14);
   }
 
   &.paused {
@@ -260,8 +552,8 @@
 
 .statusCell {
   min-height: 64px;
-  border: 1px solid #edf1f7;
-  border-radius: 6px;
+  border: 1px solid #e7edf5;
+  border-radius: 10px;
   background: #fbfcfe;
   padding: 10px 12px;
   overflow: hidden;
@@ -317,7 +609,24 @@
   padding: 0 16px 16px;
 
   .ant-tabs-nav {
-    margin-bottom: 12px;
+    margin-bottom: 14px;
+
+    &::before {
+      border-bottom-color: #e7edf5;
+    }
+  }
+
+  .ant-tabs-tab {
+    padding: 13px 0;
+  }
+
+  .ant-tabs-tab-active .ant-tabs-tab-btn {
+    color: #0f766e;
+    font-weight: 700;
+  }
+
+  .ant-tabs-ink-bar {
+    background: #0f766e;
   }
 }
 
@@ -336,9 +645,9 @@
 
 .runEvent {
   border: 1px solid #e7edf5;
-  border-radius: 6px;
+  border-radius: 10px;
   background: #ffffff;
-  padding: 10px 12px;
+  padding: 12px;
 }
 
 .runEventLine {
@@ -365,8 +674,9 @@
   overflow: auto;
   margin: 8px 0 0;
   padding: 10px;
-  border-radius: 6px;
-  background: #111827;
+  border: 1px solid #293447;
+  border-radius: 10px;
+  background: #0f172a;
   color: #e5e7eb;
   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
   font-size: 12px;
@@ -375,7 +685,7 @@
 }
 
 .debugResultPanel {
-  padding: 16px;
+  padding: 18px;
 }
 
 @media (max-width: 960px) {

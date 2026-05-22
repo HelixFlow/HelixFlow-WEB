@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useContext, useCallback, useRef } from 'react'
+import React, { useEffect, useState, useContext, useCallback, useRef, useMemo } from 'react'
 import './index.less'
 import { SystemContext } from '@/components/CusProvider';
 import { getUrlParam, isValidConnection, validateNodes } from '@/utils';
@@ -16,8 +16,8 @@ import ReactFlow, {
   useNodesState,
 } from "reactflow";
 import "reactflow/dist/style.css";
-import { Button, FloatButton, notification, message } from 'antd'
-import { SaveOutlined, RocketFilled } from '@ant-design/icons'
+import { Button, FloatButton, notification, message, Tag } from 'antd'
+import { BranchesOutlined, CodeOutlined, DatabaseOutlined, NodeIndexOutlined, SaveOutlined, RocketFilled } from '@ant-design/icons'
 import ShortUniqueId from "short-unique-id";
 const uid = new ShortUniqueId({ length: 5 });
 import { createAndEditFlow } from '@/services/Flow';
@@ -70,6 +70,10 @@ export default ({ flow }) => {
 
   const edgeUpdateSuccessful = useRef(true);
   const appId = getUrlParam("id"); //id
+  const selectedNode = useMemo(() => nodes.find((node) => node.selected), [nodes]);
+  const selectedNodeData = selectedNode?.data || {};
+  const flowStatusText = flow.status == 2 ? '已启用' : '草稿';
+  const flowStatusColor = flow.status == 2 ? 'success' : 'default';
 
   useEffect(() => {
     return () => {
@@ -221,7 +225,15 @@ export default ({ flow }) => {
     <div className='flowPage'>
       <div className="flowPage_header">
         <Back className='hoverIcon back' onClick={onBack} />
-        <div className="app_name">{flow.name}</div>
+        <div className="app_identity">
+          <div className="app_name">{flow.name}</div>
+          <div className="app_subtitle">Agent workflow orchestration / drag, configure, validate, run</div>
+        </div>
+        <div className="flowHeaderMeta">
+          <Tag color={flowStatusColor}>{flowStatusText}</Tag>
+          <Tag>{nodes.length} nodes</Tag>
+          <Tag>{edges.length} links</Tag>
+        </div>
         <TestHistory disabled={flow.status == 2} checkFlow={checkFlow} onSave={onSave} />
         <Button type='primary' disabled={flow.status == 2} onClick={() => onSave()} icon={<SaveOutlined />}>保存</Button>
       </div>
@@ -239,37 +251,108 @@ export default ({ flow }) => {
           icon={<RocketFilled style={{ color: 'var(--primaryColor)' }} />}
         />
         <SiderBar />
-        {
-          <ReactFlow
-            deleteKeyCode={null}
-            nodes={nodes}
-            edges={edges}
-            onNodesChange={onNodesChange}
-            onEdgesChange={onEdgesChange}
-            onConnect={onConnect}
-            onInit={setReactFlowInstance}
-            nodeTypes={nodeTypes}
-            onEdgeUpdateStart={onEdgeUpdateStart}
-            onEdgeUpdate={onEdgeUpdate}
-            onEdgeUpdateEnd={onEdgeUpdateEnd}
-            defaultEdgeOptions={directedEdgeDefaults}
-            onDrop={onDrop}
-            onDragOver={(e) => e.preventDefault()}
-            minZoom={0.01}
-            maxZoom={8}
-            fitView
-            proOptions={{
-              hideAttribution: true,
-            }}
-            fitViewOptions={{
-              includeHiddenNodes: true,
-              includeHiddenEdges: true,
-              maxZoom: 1,
-              minZoom: 0.4,
-            }}
-          >
-            <Controls className='flow-control' showInteractive={false}></Controls>
-          </ReactFlow>}
+        <section className="workflowCanvasShell">
+          <div className="canvasTopbar">
+            <div>
+              <div className="canvasTitle">Workflow Canvas</div>
+              <div className="canvasHint">拖拽左侧算子到画布，连接节点后执行校验与试运行。</div>
+            </div>
+            <div className="canvasStats">
+              <span><NodeIndexOutlined /> {nodes.length} 节点</span>
+              <span><BranchesOutlined /> {edges.length} 连线</span>
+              <span><CodeOutlined /> {flow.status == 2 ? '只读详情' : '可编辑'}</span>
+            </div>
+          </div>
+          <div className="workflowCanvasBody">
+            <ReactFlow
+              deleteKeyCode={null}
+              nodes={nodes}
+              edges={edges}
+              onNodesChange={onNodesChange}
+              onEdgesChange={onEdgesChange}
+              onConnect={onConnect}
+              onInit={setReactFlowInstance}
+              nodeTypes={nodeTypes}
+              onEdgeUpdateStart={onEdgeUpdateStart}
+              onEdgeUpdate={onEdgeUpdate}
+              onEdgeUpdateEnd={onEdgeUpdateEnd}
+              defaultEdgeOptions={directedEdgeDefaults}
+              onDrop={onDrop}
+              onDragOver={(e) => e.preventDefault()}
+              minZoom={0.01}
+              maxZoom={8}
+              fitView
+              proOptions={{
+                hideAttribution: true,
+              }}
+              fitViewOptions={{
+                includeHiddenNodes: true,
+                includeHiddenEdges: true,
+                maxZoom: 1,
+                minZoom: 0.4,
+              }}
+            >
+              <Background color="#cbd5e1" gap={22} size={1} />
+              <Controls className='flow-control' showInteractive={false}></Controls>
+            </ReactFlow>
+          </div>
+          <div className="canvasBottombar">
+            <span>Drop zone active</span>
+            <span>Edge validation: enabled</span>
+            <span>Checkpoint run: memory saver</span>
+          </div>
+        </section>
+        <aside className="workflowInspector">
+          <div className="inspectorHeader">
+            <div>
+              <div className="inspectorTitle">Inspector</div>
+              <div className="inspectorHint">节点、参数和运行上下文</div>
+            </div>
+            <Tag color={selectedNode ? 'processing' : 'default'}>{selectedNode ? 'Selected' : 'Canvas'}</Tag>
+          </div>
+          <div className="inspectorCard selectedNodeCard">
+            <div className="inspectorCardTitle">当前对象</div>
+            {selectedNode ? (
+              <>
+                <div className="selectedNodeName">{selectedNodeData.display_name}</div>
+                <div className="selectedNodeType">{selectedNodeData.name}</div>
+                <p>{selectedNodeData.description || '暂无描述'}</p>
+              </>
+            ) : (
+              <>
+                <div className="selectedNodeName">未选择节点</div>
+                <p>点击画布中的节点后，这里会显示节点类型、输入输出和参数概览。</p>
+              </>
+            )}
+          </div>
+          <div className="inspectorGrid">
+            <div className="inspectorMetric">
+              <span>Inputs</span>
+              <strong>{selectedNodeData.input?.length || 0}</strong>
+            </div>
+            <div className="inspectorMetric">
+              <span>Params</span>
+              <strong>{selectedNodeData.params?.length || 0}</strong>
+            </div>
+            <div className="inspectorMetric">
+              <span>Outputs</span>
+              <strong>{selectedNodeData.output?.length || 0}</strong>
+            </div>
+            <div className="inspectorMetric">
+              <span>Links</span>
+              <strong>{edges.length}</strong>
+            </div>
+          </div>
+          <div className="inspectorCard">
+            <div className="inspectorCardTitle"><DatabaseOutlined /> Runtime Settings</div>
+            <div className="inspectorList">
+              <span>Run mode <b>checkpoint</b></span>
+              <span>Pause patch <b>enabled</b></span>
+              <span>Secret masking <b>enabled</b></span>
+              <span>FlinkSQL handoff <b>available</b></span>
+            </div>
+          </div>
+        </aside>
       </div>
     </div>
   )

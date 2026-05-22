@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import {
   Alert,
   Button,
@@ -34,6 +34,8 @@ import {
   RobotOutlined,
   SaveOutlined,
   UploadOutlined,
+  DownOutlined,
+  UpOutlined,
 } from '@ant-design/icons';
 import { history } from 'umi';
 import './index.less';
@@ -315,12 +317,16 @@ export default () => {
   const [loading, setLoading] = useState(false);
   const [currentStep, setCurrentStep] = useState(0);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const [stepsCollapsed, setStepsCollapsed] = useState(false);
+  const [pipelineCollapsed, setPipelineCollapsed] = useState(false);
+  const resultCanvasRef = useRef(null);
 
   const result = analysisRun?.result || {};
   const sourceTables = result?.source_tables || [];
   const risks = result?.risks || [];
   const connectorTemplate = result?.selected_connector_templates?.[0];
   const agentTrace = result?.agent_trace || {};
+  const resultReady = Boolean(analysisRun);
 
   useEffect(() => {
     refreshAssets();
@@ -535,6 +541,8 @@ export default () => {
     const startedAt = Date.now();
     setCurrentStep(4);
     setIsAnalyzing(true);
+    setStepsCollapsed(false);
+    setPipelineCollapsed(false);
     setLoading(true);
     createBusinessAnalysisRun({
       requirement,
@@ -556,6 +564,11 @@ export default () => {
     })
       .then((res) => {
         setAnalysisRun(unwrap(res));
+        setStepsCollapsed(true);
+        setPipelineCollapsed(true);
+        window.setTimeout(() => {
+          resultCanvasRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }, 80);
         message.success('业务分析完成');
       })
       .catch((err) => message.error(err.message || '业务分析失败'))
@@ -850,6 +863,9 @@ export default () => {
   const activeStep = guideSteps[currentStep] || guideSteps[0];
   const isFirstStep = currentStep === 0;
   const isLastStep = currentStep === guideSteps.length - 1;
+  const compactGuideText = analysisRun?.run_id
+    ? `Run ${analysisRun.run_id.slice(0, 8)} · ${selectedTableText}`
+    : `${activeStep.step} ${activeStep.title}`;
 
   const goPrevStep = () => setCurrentStep((step) => Math.max(0, step - 1));
   const goNextStep = () => setCurrentStep((step) => Math.min(guideSteps.length - 1, step + 1));
@@ -871,8 +887,29 @@ export default () => {
     </Space>
   );
 
-  const renderRunAnimation = () => (
-    <div className={`baRunAnimation ${isAnalyzing ? 'active' : ''}`}>
+  const renderRunAnimation = () => {
+    if (analysisRun && pipelineCollapsed && !isAnalyzing) {
+      return (
+        <div className="baPipelineCompact">
+          <span className="baPipelineStatus" />
+          <div>
+            <strong>执行链路已完成</strong>
+            <span>Run {analysisRun.run_id?.slice(0, 8)} · 已生成 SQL、维表、TTL、资源和风险检查结果</span>
+          </div>
+          <Button size="small" icon={<DownOutlined />} onClick={() => setPipelineCollapsed(false)}>
+            展开链路
+          </Button>
+        </div>
+      );
+    }
+
+    return (
+    <div className={`baRunAnimation ${isAnalyzing ? 'active' : ''} ${analysisRun ? 'completed' : ''}`}>
+      {analysisRun && !isAnalyzing ? (
+        <Button className="baRunCollapseBtn" size="small" icon={<UpOutlined />} onClick={() => setPipelineCollapsed(true)}>
+          收起链路
+        </Button>
+      ) : null}
       <div className="baRunOrb">
         {isAnalyzing ? <LoadingOutlined /> : <PlayCircleOutlined />}
       </div>
@@ -889,7 +926,8 @@ export default () => {
         {isAnalyzing ? '正在解析表资产、召回知识库并生成 FlinkSQL...' : '点击运行后会按这条链路执行。'}
       </Text>
     </div>
-  );
+    );
+  };
 
   const renderStepContent = () => {
     switch (activeStep.key) {
@@ -1130,8 +1168,35 @@ export default () => {
                 <Tag>可反复运行</Tag>
               </Space>
             </div>
-            {renderRunAnimation()}
-            <div className="baResultCanvas">
+            {!pipelineCollapsed ? renderRunAnimation() : null}
+            <div className="baResultCanvas" ref={resultCanvasRef}>
+              <div className="baResultToolbar">
+                <div className="baResultHeadline">
+                  <span className={resultReady ? 'ready' : ''}>{resultReady ? <CheckCircleOutlined /> : <PlayCircleOutlined />}</span>
+                  <div>
+                    <strong>{resultReady ? '分析结果已生成' : '等待运行分析'}</strong>
+                    <small>{resultReady ? 'SQL、模板来源、资源建议和风险检查集中在下方 Tabs。' : '点击运行分析后，这里会优先展示结果。'}</small>
+                  </div>
+                </div>
+                <div className="baResultStats">
+                  <div>
+                    <span>建表 SQL</span>
+                    <strong>{result?.flink_create_tables?.length || 0}</strong>
+                  </div>
+                  <div>
+                    <span>候选表</span>
+                    <strong>{result?.candidate_tables?.length || sourceTables.length || 0}</strong>
+                  </div>
+                  <div>
+                    <span>风险</span>
+                    <strong className={risks.length ? 'danger' : ''}>{risks.length}</strong>
+                  </div>
+                  <div>
+                    <span>Connector</span>
+                    <strong>{connectorTemplate?.connector_type || connectorPreference}</strong>
+                  </div>
+                </div>
+              </div>
               <Tabs items={tabItems} />
               <div className="baFooterFlags">
                 <Checkbox checked disabled>Kafka 默认</Checkbox>
@@ -1139,13 +1204,14 @@ export default () => {
                 <Checkbox disabled>Yarn/S3 自动验证</Checkbox>
               </div>
             </div>
+            {pipelineCollapsed ? renderRunAnimation() : null}
           </div>
         );
     }
   };
 
   return (
-    <div className="businessAnalyzerPage">
+    <div className={`businessAnalyzerPage ${resultReady ? 'resultReady' : ''} ${stepsCollapsed ? 'stepsCompact' : ''}`}>
       <div className="baHeader">
         <div>
           <div className="baTitle"><ApartmentOutlined />业务分析器</div>
@@ -1155,29 +1221,46 @@ export default () => {
           <Tag className="baHeaderTag">Kafka first</Tag>
           <Tag className="baHeaderTag">Milvus RAG</Tag>
           <Tag className="baHeaderTag">Agent reusable</Tag>
+          <Button
+            className="baHeaderToggle"
+            size="small"
+            icon={stepsCollapsed ? <DownOutlined /> : <UpOutlined />}
+            onClick={() => setStepsCollapsed((value) => !value)}
+          >
+            {stepsCollapsed ? '展开流程' : '收起流程'}
+          </Button>
         </Space>
       </div>
 
-      <div className="baStepRail">
-        {guideSteps.map((item, index) => (
-          <button
-            type="button"
-            key={item.key}
-            className={`baStepCard ${index === currentStep ? 'active' : ''} ${item.done ? 'done' : ''}`}
-            onClick={() => setCurrentStep(index)}
-          >
-            <span className="baStepIcon">{item.done ? <CheckCircleOutlined /> : item.icon}</span>
-            <span className="baStepCopy">
-              <em>{item.step}</em>
-              <strong>{item.title}</strong>
-              <span>{item.action}</span>
-            </span>
-            <span className="baStepMeta">{index === currentStep && isAnalyzing ? '执行中' : item.meta}</span>
-          </button>
-        ))}
-      </div>
+      {stepsCollapsed && !resultReady ? (
+        <button type="button" className="baCompactGuide" onClick={() => setStepsCollapsed(false)}>
+          <span className="baCompactPulse" />
+          <strong>流程已收起</strong>
+          <span>{compactGuideText}</span>
+          <DownOutlined />
+        </button>
+      ) : !stepsCollapsed ? (
+        <div className="baStepRail">
+          {guideSteps.map((item, index) => (
+            <button
+              type="button"
+              key={item.key}
+              className={`baStepCard ${index === currentStep ? 'active' : ''} ${item.done ? 'done' : ''}`}
+              onClick={() => setCurrentStep(index)}
+            >
+              <span className="baStepIcon">{item.done ? <CheckCircleOutlined /> : item.icon}</span>
+              <span className="baStepCopy">
+                <em>{item.step}</em>
+                <strong>{item.title}</strong>
+                <span>{item.action}</span>
+              </span>
+              <span className="baStepMeta">{index === currentStep && isAnalyzing ? '执行中' : item.meta}</span>
+            </button>
+          ))}
+        </div>
+      ) : null}
 
-      <main className="baStageCard">
+      <main className={`baStageCard ${activeStep.key === 'result' ? 'resultMode' : ''}`}>
         <div className="baStageHeader">
           <div className="baStageTitle">
             <span>{activeStep.icon}</span>
